@@ -16,7 +16,7 @@ def callback_ptcloud(ptcloud_data):
 
 if __name__ == '__main__':
     rospy.init_node("cam_to_depthcoords", anonymous=True)
-    rate = rospy.Rate(7) # ROS Rate at 5Hz
+    rate = rospy.Rate(7)
     rospy.loginfo("Cam to Depth node started")
     
     rospy.Subscriber("/camera/depth/color/points", PointCloud2, callback_ptcloud)
