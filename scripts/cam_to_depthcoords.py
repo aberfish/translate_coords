@@ -20,6 +20,8 @@ if __name__ == '__main__':
     
     rospy.Subscriber("/camera/depth/color/points", PointCloud2, callback_ptcloud)
 
+    rospy.Publisher("/fish/pc_coords", )
+
     while not rospy.is_shutdown():
         rospy.spin()
         rate.sleep()
