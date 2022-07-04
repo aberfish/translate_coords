@@ -7,9 +7,9 @@ import numpy as np
 def callback_ptcloud(ptcloud_data):
     pc = ros_numpy.numpify(ptcloud_data)
     points=np.zeros((pc.shape[0],3))
-    points[:,0]=pc['x']
-    points[:,1]=pc['y']
-    points[:,2]=pc['z']
+    points[:,0] = pc['x']
+    points[:,1] = pc['y']
+    points[:,2] = pc['z']
     rospy.loginfo(pc)
 
 
