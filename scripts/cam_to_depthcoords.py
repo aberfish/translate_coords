@@ -19,7 +19,7 @@ def callback_ptcloud(depth_msg):
         depth_image = bridge.imgmsg_to_cv2(depth_msg, desired_encoding="passthrough")
         most_recent_pc = np.array(depth_image, dtype=np.float32)
         center_idx = np.array(most_recent_pc.shape) / 2
-        print ('center depth:', most_recent_pc[center_idx[0], center_idx[1]])
+        print('center depth:', most_recent_pc[int(center_idx[0]), int(center_idx[1])])
 
     except CvBridgeError as e:
         print(e)
@@ -30,7 +30,7 @@ def callback_coordinput(coord):
         rospy.logwarn("No pointcloud data recieved yet")
         return
     pnt = ros_numpy.numpify(coord)
-    pnt_msg = Point(x=pnt[0], y=pnt[1], z=most_recent_pc[pnt[0], pnt[1]])
+    pnt_msg = Point(x=pnt[0], y=pnt[1], z=most_recent_pc[int(pnt[0]), int(pnt[1])])
     coord_pub.publish(pnt_msg)
 
 if __name__ == '__main__':
