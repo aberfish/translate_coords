@@ -7,6 +7,10 @@ from geometry_msgs.msg import Point
 
 import numpy as np
 
+# to publish test input coordinate:
+# rostopic pub -1 /input_coords geometry_msgs/Point "250" "250" "0"
+# max coords = 480, 640
+
 most_recent_pc = None
 
 def callback_ptcloud(depth_msg):

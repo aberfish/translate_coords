@@ -2,8 +2,6 @@ import rospy
 from sensor_msgs.msg import Image as msg_Image
 from sensor_msgs.msg import CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
-import sys
-import os
 import pyrealsense2 as rs2
 
 intrinsics = None
@@ -13,8 +11,8 @@ def imageDepthCallback(data):
     global intrinsics
     try:
         cv_image = bridge.imgmsg_to_cv2(data, data.encoding)
-        pix = (data.width/2, data.height/2)
-        print('Depth at center(%d, %d): %f(mm)\r' % (pix[0], pix[1], cv_image[pix[1], pix[0]]))
+        pix = (int(data.width/2), int(data.height/2)
+        print('Depth at center(%d, %d): %f(mm)\r' % (pix[0], pix[1], cv_image[int(pix[1]), pix[0]]))
 
         if intrinsics:
             depth = cv_image[pix[1], pix[0]]
