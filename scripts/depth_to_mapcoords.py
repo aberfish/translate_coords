@@ -11,8 +11,8 @@ def imageDepthCallback(data):
     global intrinsics
     try:
         cv_image = bridge.imgmsg_to_cv2(data, data.encoding)
-        pix = (int(data.width/2), int(data.height/2)
-        print('Depth at center(%d, %d): %f(mm)\r' % (pix[0], pix[1], cv_image[int(pix[1]), pix[0]]))
+        pix = (int(data.width/2), int(data.height/2))
+        print('Depth at center(%d, %d): %f(mm)\r' % (pix[0], pix[1], cv_image[pix[1], pix[0]]))
 
         if intrinsics:
             depth = cv_image[pix[1], pix[0]]
