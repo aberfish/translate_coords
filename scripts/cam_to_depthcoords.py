@@ -10,7 +10,7 @@ def callback_ptcloud(ptcloud_data):
     points[:,0] = pc['x']
     points[:,1] = pc['y']
     points[:,2] = pc['z']
-    rospy.loginfo(pc)
+    rospy.logerr(pc)
 
 
 if __name__ == '__main__':

@@ -1,8 +1,4 @@
 <launch>
-    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find tango_tracker)/custom_rosconsole.conf"/>
-
-    <arg name="marker_size" />
-
     <arg name="serial_no"           default=""/>
     <arg name="usb_port_id"         default=""/>
     <arg name="device_type"         default=""/>
