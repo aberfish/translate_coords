@@ -1,23 +1,40 @@
 import rospy
 from sensor_msgs.msg import Image as msg_Image
+from geometry_msgs.msg import Point
 from sensor_msgs.msg import CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
+
 import pyrealsense2 as rs2
 
 intrinsics = None
+latest_depth_image = None
 bridge = CvBridge()
 
+def depthPointCallback(pnt):
+    global latest_depth_image, intrinsics
+
+    if intrinsics:
+        depth = pnt[2]
+
+        # convert depth from mm to metres
+        depth = depth/1000
+
+        # deproject to realworld coords in metres
+        result = rs2.rs2_deproject_pixel_to_point(intrinsics, [pnt[0], pnt[1]], depth)
+
+        # publish result
+        pnt_msg = Point(x=result[0], y=result[1], z=result[2])
+        depth_coords_realworld_pub.publish(pnt_msg)
+
+    else:
+        rospy.logwarn("Camera intrinsics not received yet")
+
 def imageDepthCallback(data):
-    global intrinsics
+    global latest_depth_image
+
     try:
         cv_image = bridge.imgmsg_to_cv2(data, data.encoding)
-        pix = (int(data.width/2), int(data.height/2)
-        print('Depth at center(%d, %d): %f(mm)\r' % (pix[0], pix[1], cv_image[int(pix[1]), pix[0]]))
-
-        if intrinsics:
-            depth = cv_image[pix[1], pix[0]]
-            result = rs2.rs2_deproject_pixel_to_point(intrinsics, [pix[0], pix[1]], depth)
-            print('result:', result)
+        latest_depth_image = cv_image
 
     except CvBridgeError as e:
         print(e)
@@ -41,6 +58,7 @@ def imageDepthInfoCallback(cameraInfo):
         elif cameraInfo.distortion_model == 'equidistant':
             intrinsics.model = rs2.distortion.kannala_brandt4
         intrinsics.coeffs = [i for i in cameraInfo.D]
+
     except CvBridgeError as e:
         print(e)
         return
@@ -49,7 +67,10 @@ def imageDepthInfoCallback(cameraInfo):
 if __name__ == '__main__':
     rospy.init_node("depth_to_mapcoords")
 
-    sub = rospy.Subscriber("/camera/depth/image_rect_raw", msg_Image, imageDepthCallback)
-    sub_info = rospy.Subscriber('/camera/depth/camera_info', CameraInfo, imageDepthInfoCallback)
+    depth_img_sub = rospy.Subscriber("/camera/depth/image_rect_raw", msg_Image, imageDepthCallback)
+    cam_info_sub = rospy.Subscriber('/camera/depth/camera_info', CameraInfo, imageDepthInfoCallback)
+    input_coords_sub = rospy.Subscriber('pc_coords', Point, depthPointCallback)
+
+    depth_coords_realworld_pub = rospy.Publisher('realworld_depth_coords', Point, queue_size=10)
 
     rospy.spin()
