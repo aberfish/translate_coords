@@ -1,0 +1,37 @@
+<launch>
+    <arg name="serial_no"             default=""/>
+    <arg name="json_file_path"        default=""/>
+    <arg name="camera"                default="camera"/>
+
+    <group ns="$(arg camera)">
+        <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+            <arg name="stereo_module/exposure/1"  default="7500"/>
+            <arg name="stereo_module/gain/1"      default="16"/>
+            <arg name="stereo_module/exposure/2"  default="1"/>
+            <arg name="stereo_module/gain/2"      default="16"/>
+
+            <arg name="depth_width"       value="640"/>
+            <arg name="depth_height"      value="480"/>
+            <arg name="depth_fps"         value="30"/>
+            <arg name="color_width"       value="640"/>
+            <arg name="color_height"      value="480"/>
+            <arg name="color_fps"         value="30"/>
+            <arg name="enable_depth"      value="true"/>
+            <arg name="enable_color"      value="true"/>
+            <arg name="enable_infra1"     value="false"/>
+            <arg name="enable_infra2"     value="false"/>
+            <arg name="enable_fisheye"    value="false"/>
+            <arg name="enable_gyro"       value="false"/>
+            <arg name="enable_accel"      value="false"/>
+            <arg name="enable_pointcloud" value="true"/>
+            <arg name="enable_sync"       value="true"/>
+            <arg name="align_depth"       value="true"/>
+        </include>
+    </group>
+    
+    <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="tf_pos:=5.0 0.0 0.0 tf_rot:=0.0 0.0 0.0 world_frame:='map'" required="true"/>
+
+    <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepthtest" required="true"/>
+
+
+</launch>

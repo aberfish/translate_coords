@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -163,6 +164,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/cam_to_depthcoords.py
   scripts/depth_to_mapcoords.py
+  scripts/cam_transform.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -170,7 +172,7 @@ catkin_install_python(PROGRAMS
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
 # install(TARGETS ${PROJECT_NAME}_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+# )has some 
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
