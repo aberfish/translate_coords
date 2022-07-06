@@ -1,5 +1,5 @@
 <launch>
-    <arg name="serial_no"             default=""/>
+    <!-- <arg name="serial_no"             default=""/>
     <arg name="json_file_path"        default=""/>
     <arg name="camera"                default="camera"/>
 
@@ -27,11 +27,11 @@
             <arg name="enable_sync"       value="true"/>
             <arg name="align_depth"       value="true"/>
         </include>
-    </group>
+    </group> -->
     
     <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="_tf_pos:=[5.0,0.0,0.0] _tf_rot:=[0.0,0.0,0.0] _world_frame:='map' _cam_frame:='_link'" required="true"/>
-
+<!-- 
     <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepthtest" required="true"/>
-
+ -->
 
 </launch>
