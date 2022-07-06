@@ -1,5 +1,5 @@
 """PKG: translatecoords     NODE: cam_to_depth_coords.py
-Converts 2d pixel coordinates from depth camera colour images to realworld 3d coordinates measured in metres, where 0,0,0 is WHERE IS 0,0,0 I DONT KNOW ITS SOME PLACE IN THE ETHERRRRRR
+Converts 2d pixel coordinates from depth camera colour images to realworld 3d coordinates measured in metres, where 0,0,0 is ≈ (240, 320, 0)
 """
 
 import rospy
@@ -19,6 +19,9 @@ import pyrealsense2 as rs2
 latest_depth_img = None
 intrinsics = None
 
+# Function is called each time image data (a frame) is publsihed from the camera to the "/camera/aligned_depth_to_color/image_raw" topic.
+# The function uses the CvBridge package to convert the image data from a ros image to an openCV image and assigns it to depth_image. 
+# depth_image is converted to a np array of type float32 and assigned to the global latest_depth_img variable.
 def callback_depthimg(depth_msg):
     global latest_depth_img
 
@@ -27,12 +30,17 @@ def callback_depthimg(depth_msg):
     try:
         #Convert the depth image using the default passthrough encoding
         depth_image = bridge.imgmsg_to_cv2(depth_msg, desired_encoding="passthrough")
-        latest_depth_img = np.array(depth_image, dtype=np.float32)
+        #Convert the openCV image (which is a np array) to a np array of data type float
+        latest_depth_img = np.array(depth_image, dtype=np.float32) 
 
     except CvBridgeError as e:
         print(e)
 
-
+# function is called each time data is published to "input_coords" topic. Makes use of the data in the intrinsics and latest_depth_img variables provided 
+# by the callback_caminfo and callback_depthimg functions (respectively). If there is no data in these variables then an error message is printed.
+# The inputted coords from the "input_coords" topic is used to locate a point on the latest_depth_image and find the depth at that point. 
+# A method in the rs2 package coverts the inputted coords to real world coords using the 'intrinics' as a parameter. It stores the full 3d real world 
+# coords in the realworld_pnt variable. The individual real world x, y, z coords are published to the 'realworld_coords' topic.
 def callback_coordinput(coord):
     global intrinsics, latest_depth_img
 
@@ -44,8 +52,9 @@ def callback_coordinput(coord):
         rospy.logwarn("Camera intrinsics info not recieved yet")
         return
 
-    # read depth at point
-    pnt = ros_numpy.numpify(coord)
+    # converts ros Point message type (coord) to a numpy object
+    pnt = ros_numpy.numpify(coord) 
+    # locates the depth of the point in the latest_depth_img where the point is specified by the data from the input_coords topic.
     depth = latest_depth_img[int(pnt[0]), int(pnt[1])]
 
     # convert depth from mm to metres
@@ -58,7 +67,9 @@ def callback_coordinput(coord):
     pnt_msg = Point(x=realworld_pnt[0], y=realworld_pnt[1], z=realworld_pnt[2])
     coord_pub.publish(pnt_msg)
 
-
+# Each time data is published to the '/camera/depth/camera_info' topic this function is called
+# and the published data is passed as a parameter. The data is of CameraInfo type and contains info about the camera.
+# The intrinsic camera parameters are assigned to the global 'intrinsics' variable.  
 def callback_caminfo(cameraInfo):
     global intrinsics
 
@@ -81,12 +92,14 @@ def callback_caminfo(cameraInfo):
     except CvBridgeError as e:
         print(e)
 
+# main function that initialises the node, declares the topics the node publishes to, 
+# decalres topics the node subscribes to and which callback functions the data is sent to. 
 if __name__ == '__main__':
     rospy.init_node("cam_to_depthcoords", anonymous=True)
     rate = rospy.Rate(30)
     rospy.loginfo("Cam to Depth node started")
 
-    rospy.Subscriber('/camera/depth/camera_info', CameraInfo, callback_caminfo)   
+    rospy.Subscriber('/camera/depth/camera_info', CameraInfo, callback_caminfo) 
     rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, callback_depthimg)
     rospy.Subscriber("input_coords", Point, callback_coordinput)
 
