@@ -29,7 +29,7 @@
         </include>
     </group>
     
-    <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="tf_pos:=5.0 0.0 0.0 tf_rot:=0.0 0.0 0.0 world_frame:='map'" required="true"/>
+    <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="_tf_pos:=[5.0,0.0,0.0] _tf_rot:=[0.0,0.0,0.0] _world_frame:='map' _cam_frame:='_link'" required="true"/>
 
     <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepthtest" required="true"/>
 
