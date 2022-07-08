@@ -22,19 +22,19 @@ intrinsics = None
 # Function is called each time image data (a frame) is publsihed from the camera to the "/camera/aligned_depth_to_color/image_raw" topic.
 # The function uses the CvBridge package to convert the image data from a ros image to an openCV image and assigns it to depth_image. 
 # depth_image is converted to a np array of type float32 and assigned to the global latest_depth_img variable.
-#def callback_depthimg(depth_msg):
- #   global latest_depth_img
+def callback_depthimg(depth_msg):
+    global latest_depth_img
 
-  #  bridge = CvBridge()
+    bridge = CvBridge()
      # Use cv_bridge() to convert the ROS image to OpenCV format
-   # try:
+    try:
         #Convert the depth image using the default passthrough encoding
-    #    depth_image = bridge.imgmsg_to_cv2(depth_msg, desired_encoding="passthrough")
+        depth_image = bridge.imgmsg_to_cv2(depth_msg, desired_encoding="passthrough")
         #Convert the openCV image (which is a np array) to a np array of data type float
-     #   latest_depth_img = np.array(depth_image, dtype=np.float32) 
+        latest_depth_img = np.array(depth_image, dtype=np.float32) 
 
-    #except CvBridgeError as e:
-     #   print(e)
+    except CvBridgeError as e:
+        print(e)
 
 # function is called each time data is published to "input_coords" topic. Makes use of the data in the intrinsics and latest_depth_img variables provided 
 # by the callback_caminfo and callback_depthimg functions (respectively). If there is no data in these variables then an error message is printed.
@@ -42,11 +42,11 @@ intrinsics = None
 # A method in the rs2 package coverts the inputted coords to real world coords using the 'intrinics' as a parameter. It stores the full 3d real world 
 # coords in the realworld_pnt variable. The individual real world x, y, z coords are published to the 'realworld_coords' topic.
 def callback_coordinput(coord):
-    global intrinsics #latest_depth_img
+    global intrinsics, latest_depth_img
 
-    #if latest_depth_img is None:
-     #   rospy.logwarn("No pointcloud data recieved yet")
-      #  return
+    if latest_depth_img is None:
+        rospy.logwarn("No pointcloud data recieved yet")
+        return
 
     if intrinsics is None:
         rospy.logwarn("Camera intrinsics info not recieved yet")
@@ -55,13 +55,10 @@ def callback_coordinput(coord):
     # converts ros Point message type (coord) to a numpy object
     pnt = ros_numpy.numpify(coord) 
     # locates the depth of the point in the latest_depth_img where the point is specified by the data from the input_coords topic.
-    #depth = latest_depth_img[int(pnt[0]), int(pnt[1])]
+    depth = latest_depth_img[int(pnt[0]), int(pnt[1])]
 
     # convert depth from mm to metres
-    #depth = depth/1000
-
-    #debug hardcoded depth 
-    depth = 3.1
+    depth = depth/1000
 
     # deproject to realworld coords in metres
     realworld_pnt = rs2.rs2_deproject_pixel_to_point(intrinsics, [pnt[0], pnt[1]], depth)
@@ -103,7 +100,7 @@ if __name__ == '__main__':
     rospy.loginfo("Cam to Depth node started")
 
     rospy.Subscriber('/camera/depth/camera_info', CameraInfo, callback_caminfo) 
-    #rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, callback_depthimg)
+    rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, callback_depthimg)
     rospy.Subscriber("input_coords", Point, callback_coordinput)
 
     coord_pub = rospy.Publisher("realworld_coords", Point, queue_size=10)
