@@ -53,7 +53,7 @@ def send_goal(goal_pnt):
 
 if __name__ == '__main__':
     rospy.init_node("goal_server")
-    frame_name = rospy.get_param('~frame', default="camera_link")
+    frame_name = rospy.get_param('~map_frame', default="map")
     rospy.loginfo("Goal Server node started")
 
     # connect to movebase action server for sending goals
