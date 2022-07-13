@@ -90,7 +90,7 @@ if __name__ == '__main__':
     rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, callback_depthimg)
     rospy.Subscriber("input_coords", Point, callback_coordinput)
 
-    coord_pub = rospy.Publisher("realworld_coords", Point, queue_size=10)
+    coord_pub = rospy.Publisher("depth_coords", Point, queue_size=10)
 
     while not rospy.is_shutdown():
         rospy.spin()
