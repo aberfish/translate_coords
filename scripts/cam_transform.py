@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     cam_tf_pos = rospy.get_param('~tf_pos', default=(0.0, 0.0, 0.0))
     cam_tf_rot = rospy.get_param('~tf_rot', default=(0.0, 0.0, 0.0))
-    world_frame_name = rospy.get_param('~world_frame')
+    world_frame_name = rospy.get_param('~world_frame', default='map')
     cam_frame_name = rospy.get_param('~cam_frame', default="_link")
 
     # START RQT FIRST TO VIEW

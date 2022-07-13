@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
+  tf2_ros
   tf
 )
 
@@ -163,7 +164,8 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/cam_to_depthcoords.py
-  scripts/depth_to_mapcoords.py
+  scripts/depth_to_mapcoords.py  
+  scripts/goal_server.py
   scripts/cam_transform.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
