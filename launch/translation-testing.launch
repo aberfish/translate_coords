@@ -66,9 +66,9 @@
         </node>
     </group>
     
-    <!-- <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="_tf_pos:=[5.0,0.0,0.0] _tf_rot:=[0.0,0.0,0.0] _world_frame:='map' _cam_frame:='_link'"/>
+    <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="_tf_pos:=[5.0,0.0,0.0] _tf_rot:=[0.0,0.0,0.0] _world_frame:='map' _cam_frame:='_link'"/>
 
     <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepth" required="true"/>
-    <node pkg="translate_coords" type="depth_to_mapcoords.py" name="depthtomap" required="true" args="_world_frame:='map' _cam_frame:='_link'"/> -->
+    <node pkg="translate_coords" type="depth_to_mapcoords.py" name="depthtomap" required="true" args="_world_frame:='map' _cam_frame:='_link'"/>
 
 </launch>

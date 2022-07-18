@@ -6,8 +6,8 @@ import tf2_ros
 from geometry_msgs.msg import Point
 from tf2_geometry_msgs import PointStamped
 
-tfbuffer = tf2_ros.Buffer()
-tflistener = tf2_ros.TransformListener(tfbuffer)
+tfbuffer = None
+tflistener = None
 
 def callback_coordinput(coord):
     # convert point to stamped point in camera frame
@@ -35,6 +35,9 @@ if __name__ == "__main__":
     world_frame_name = rospy.get_param('~world_frame', default='map')
     cam_frame_name = rospy.get_param('~cam_frame', default="_link")
     tftimeout = rospy.get_param('~tf_timeout', default=1.0) # in secs
+
+    tfbuffer = tf2_ros.Buffer()
+    tflistener = tf2_ros.TransformListener(tfbuffer)
 
     rospy.loginfo("Depth to Map node started")
 
