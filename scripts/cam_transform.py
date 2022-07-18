@@ -4,15 +4,18 @@ import tf2_ros as tf2
 import tf
 from geometry_msgs.msg import TransformStamped
 
+#instantiate a StaticTransformBroadcaster object
 br = tf2.StaticTransformBroadcaster()
 
-
+#Function instantiates a TransformStamped object and broadcasts it. TransformStamped class has transform, header and child_frame_id fields. transform holds info about 
+#rotation (quaternions) and translation (direction vector). header and child_frame_id hold info about the frames between which the transform describes.
+#The TransformStamped object is broadcast using br.sendTransform.
 def broadcast_tf(tf_position, tf_rotation, world_frame, cam_frame):
     static_transformStamped = TransformStamped()
 
     static_transformStamped.header.stamp = rospy.Time.now()
-    static_transformStamped.header.frame_id = world_frame #from + the value of this is 'map', should we change name of var to map?
-    static_transformStamped.child_frame_id = cam_frame #to 
+    static_transformStamped.header.frame_id = world_frame #describe transform from this frame (the value of this is 'map', should we change name of var to map?)
+    static_transformStamped.child_frame_id = cam_frame #describes tranform to this frame 
 
     
     static_transformStamped.transform.translation.x = float(tf_position[0])
@@ -28,6 +31,8 @@ def broadcast_tf(tf_position, tf_rotation, world_frame, cam_frame):
 
     br.sendTransform(static_transformStamped)
 
+#main function. Initialises cam_tf_broadcaster node. Initialises 4 variables with data from the launch file (via the parameter server).
+#once the variables are initialised the broadcast_tf function is called. 
 if __name__ == '__main__':
     rospy.init_node('cam_tf_broadcaster')
 
