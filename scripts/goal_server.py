@@ -3,7 +3,7 @@ import actionlib
 
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from actionlib_msgs.msg import GoalStatus
-from geometry_msgs.msg import Pose, Point, Quaternion
+from geometry_msgs.msg import Pose, PointStamped, Quaternion
 from tf.transformations import quaternion_from_euler
 
 client = None
@@ -42,7 +42,7 @@ def done_callback(status, result):
 def send_goal(goal_pnt):
 
     qt = quaternion_from_euler(0, 0, 0)
-    goal_pose = Pose(goal_pnt, Quaternion(*qt))
+    goal_pose = Pose(goal_pnt.point, Quaternion(*qt))
 
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = frame_name
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     rospy.loginfo("Connected to move base server")
 
     # subscribe to goal coords topic
-    rospy.Subscriber("realworld_coords", Point, send_goal)
+    rospy.Subscriber("realworld_coords", PointStamped, send_goal)
 
     rospy.spin()
 
