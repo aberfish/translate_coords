@@ -55,13 +55,13 @@ def callback_coordinput(coord):
     # converts ros Point message type (coord) to a numpy object
     pnt = ros_numpy.numpify(coord) 
     # locates the depth of the point in the latest_depth_img where the point is specified by the data from the input_coords topic.
-    depth = latest_depth_img[int(pnt[0]), int(pnt[1])]
+    depth = latest_depth_img[int(pnt[1]), int(pnt[0])]
 
     # convert depth from mm to metres
     depth = depth/1000
 
     # deproject to realworld coords in metres
-    realworld_pnt = rs2.rs2_deproject_pixel_to_point(intrinsics, [pnt[0], pnt[1]], depth)
+    realworld_pnt = rs2.rs2_deproject_pixel_to_point(intrinsics, [pnt[1], pnt[0]], depth)
 
     # publish result
     pnt_msg = Point(x=realworld_pnt[0], y=realworld_pnt[1], z=realworld_pnt[2])
