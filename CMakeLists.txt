@@ -167,6 +167,7 @@ catkin_install_python(PROGRAMS
   scripts/depth_to_mapcoords.py  
   scripts/goal_server.py
   scripts/cam_transform.py
+  scripts/coordread.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

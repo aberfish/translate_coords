@@ -35,12 +35,11 @@
 
     <node pkg="translate_coords" type="cam_transform.py" name="tf_cam_broadcast" args="_tf_pos:=[2.55,0.85,3.1] _tf_rot:=[0,0,0.7071068,0.7071068] _world_frame:='map' _cam_frame:='_link'"/>
 
-    <node pkg="tango_tracker" type="tango_tracker.py" name="tracker" args="_show_ui:=True _marker_size:=$(arg marker_size)" required="true"/>
-
-    <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepth" required="true">
-        <remap from="input_coords" to="/position_2d"/>
+    <node pkg="translate_coords" type="cam_to_depthcoords.py" name="camtodepth" required="true"/>
+    <node pkg="translate_coords" type="depth_to_mapcoords.py" name="depthtomap" required="true" args="_world_frame:='map' _cam_frame:='_link'">
+        <remap from="realworld_coords" to="/goal_coords"/>
     </node>
 
-    <node pkg="translate_coords" type="depth_to_mapcoords.py" name="depthtomap" required="true" args="_world_frame:='map' _cam_frame:='_link'"/>
+    <node pkg="translate_coords" type="goal_server.py" name="goalserver" required="true" args="_map_frame:='map'"/>
 
 </launch>
