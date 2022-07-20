@@ -14,10 +14,11 @@ import pyrealsense2 as rs2
 
 # to publish test input coordinate:
 # rostopic pub -1 /input_coords geometry_msgs/Point "250" "250" "0"
-# max coords = 480, 640
 
 latest_depth_img = None
 intrinsics = None
+
+COORDINATE_SCALING = 0.69 # applied to x and y coordinates after deprojection
 
 # Function is called each time image data (a frame) is publsihed from the camera to the "/camera/aligned_depth_to_color/image_raw" topic.
 # The function uses the CvBridge package to convert the image data from a ros image to an openCV image and assigns it to depth_image. 
@@ -62,6 +63,10 @@ def callback_coordinput(coord):
 
     # deproject to realworld coords in metres
     realworld_pnt = rs2.rs2_deproject_pixel_to_point(intrinsics, [pnt[1], pnt[0]], depth)
+
+    # BUG x and y axis of point needs scaling inorder to get it correct. unkown why
+    realworld_pnt[0] *= COORDINATE_SCALING
+    realworld_pnt[1] *= COORDINATE_SCALING
 
     # publish result
     pnt_msg = Point(x=realworld_pnt[0], y=realworld_pnt[1], z=realworld_pnt[2])

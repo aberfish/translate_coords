@@ -16,6 +16,9 @@ def callback_coordinput(coord):
     pnt.header.frame_id = cam_frame_name
     pnt.point = coord
 
+    # flip z, as camera coords follow left hand rule, but ros follows right hand rule
+    pnt.point.z = -pnt.point.z
+
     try:
         #returns the transform between the two frames?
         # tf = tfbuffer.lookup_transform(cam_frame_name, world_frame_name, rospy.Time(), tftimeout)

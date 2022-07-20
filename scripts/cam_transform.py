@@ -14,14 +14,13 @@ def broadcast_tf(tf_position, tf_rotation, world_frame, cam_frame):
     static_transformStamped = TransformStamped()
 
     static_transformStamped.header.stamp = rospy.Time.now()
+
     static_transformStamped.header.frame_id = world_frame #describe transform from this frame (the value of this is 'map', should we change name of var to map?)
     static_transformStamped.child_frame_id = cam_frame #describes tranform to this frame 
 
-    
     static_transformStamped.transform.translation.x = float(tf_position[0])
     static_transformStamped.transform.translation.y = float(tf_position[1])
     static_transformStamped.transform.translation.z = float(tf_position[2])
-
     
     quat = tf.transformations.quaternion_from_euler(float(tf_rotation[0]), float(tf_rotation[1]), float(tf_rotation[1]))
     static_transformStamped.transform.rotation.x = quat[0]
@@ -37,7 +36,7 @@ if __name__ == '__main__':
     rospy.init_node('cam_tf_broadcaster')
 
     cam_tf_pos = rospy.get_param('~tf_pos', default=(0.0, 0.0, 0.0))
-    cam_tf_rot = rospy.get_param('~tf_rot', default=(0.0, 0.0, 0.0))
+    cam_tf_rot = rospy.get_param('~tf_rot', default=(0.0, 0.0, 0.0, 0.0))
     world_frame_name = rospy.get_param('~world_frame', default='map')
     cam_frame_name = rospy.get_param('~cam_frame', default="_link")
 
