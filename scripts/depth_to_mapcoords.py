@@ -1,6 +1,3 @@
-from email import header
-from py_compile import main
-from time import time
 import rospy
 import tf2_ros
 from geometry_msgs.msg import Point
@@ -44,8 +41,7 @@ if __name__ == "__main__":
     rospy.init_node('depth_to_mapcoords', anonymous=True)
     rate = rospy.Rate(30)
 
-    #Initialises the variables with values from the launchfile (via parameter server)
-    world_frame_name = rospy.get_param('~world_frame', default='map')
+    world_frame_name = rospy.get_param('~map_frame', default='map')
     cam_frame_name = rospy.get_param('~cam_frame', default="_link")
     tftimeout = rospy.get_param('~tf_timeout', default=1.0) # in secs
 
