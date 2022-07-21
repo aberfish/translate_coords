@@ -1,8 +1,6 @@
 import rospy
 import actionlib
-
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from actionlib_msgs.msg import GoalStatus
 from geometry_msgs.msg import Pose, PointStamped, Quaternion
 from tf.transformations import quaternion_from_euler
 
